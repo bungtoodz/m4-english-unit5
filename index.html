@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.4 English Unit 5 Part A: Listening Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Kanit', 'sans-serif'],
+                        th: ['Kanit', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            accent: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .card-flip.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .soundwave-bar {
+            animation: soundwave 1s ease-in-out infinite alternate;
+        }
+        @keyframes soundwave {
+            0% { height: 4px; }
+            100% { height: 20px; }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-sky-200">
+
+    <!-- TOP HEADER / DASHBOARD NAVBAR -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <!-- App Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-sky-200">
+                        U5
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold tracking-wider uppercase text-sky-600 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">New Frontiers 4</span>
+                            <span class="text-xs text-slate-500">M.4 English</span>
+                        </div>
+                        <h1 class="text-lg font-extrabold text-slate-900 leading-tight">Unit 5: Problems Around the House</h1>
+                    </div>
+                </div>
+
+                <!-- Stats & Controls Bar -->
+                <div class="flex items-center space-x-3 sm:space-x-6">
+                    <!-- Audio Speed Selector -->
+                    <div class="hidden md:flex items-center bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+                        <span class="text-slate-500 px-2"><i class="fa-solid fa-gauge-high mr-1"></i>Speed:</span>
+                        <button onclick="setTtsSpeed(0.8)" id="spd-08" class="px-2 py-1 rounded transition text-slate-600 hover:text-slate-900">0.8x</button>
+                        <button onclick="setTtsSpeed(1.0)" id="spd-10" class="px-2 py-1 rounded bg-white text-sky-600 shadow-sm">1.0x</button>
+                        <button onclick="setTtsSpeed(1.2)" id="spd-12" class="px-2 py-1 rounded transition text-slate-600 hover:text-slate-900">1.2x</button>
+                    </div>
+
+                    <!-- TH Translation Hint Toggle -->
+                    <button onclick="toggleThaiHints()" id="th-toggle-btn" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition shadow-sm">
+                        <i class="fa-solid fa-language text-sky-500 text-sm"></i>
+                        <span id="th-toggle-txt">TH Hints: ON</span>
+                    </button>
+
+                    <!-- XP Score Badge -->
+                    <div class="flex items-center bg-amber-50 border border-amber-200 text-amber-700 px-3 py-1.5 rounded-xl font-bold text-sm shadow-sm">
+                        <i class="fa-solid fa-bolt text-amber-500 mr-2 text-base animate-bounce"></i>
+                        <span id="xp-counter">0</span> <span class="text-xs ml-1 font-normal text-amber-600">XP</span>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <button onclick="resetAllProgress()" class="text-slate-400 hover:text-rose-500 transition p-2 rounded-lg" title="Reset Progress">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Progress Bar -->
+            <div class="mt-3 bg-slate-100 rounded-full h-2 overflow-hidden flex">
+                <div id="global-progress-bar" class="bg-gradient-to-r from-sky-400 to-blue-600 h-full w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="bg-white border-b border-slate-200 sticky top-[69px] z-30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-1 overflow-x-auto py-2 no-scrollbar" id="nav-tabs">
+                <button onclick="switchTab('tab-vocab-explorer')" id="btn-tab-vocab-explorer" class="nav-btn active-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">
+                    <i class="fa-solid fa-cubes"></i>
+                    <span>1. Vocab Explorer</span>
+                </button>
+                <button onclick="switchTab('tab-vocab-practice')" id="btn-tab-vocab-practice" class="nav-btn inactive-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>2. Vocab Practice</span>
+                </button>
+                <button onclick="switchTab('tab-focus-grammar')" id="btn-tab-focus-grammar" class="nav-btn inactive-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>3. Focus & Dialogue</span>
+                </button>
+                <button onclick="switchTab('tab-listen-up')" id="btn-tab-listen-up" class="nav-btn inactive-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">
+                    <i class="fa-solid fa-headphones"></i>
+                    <span>4. Listen Up</span>
+                </button>
+                <button onclick="switchTab('tab-challenge')" id="btn-tab-challenge" class="nav-btn inactive-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>5. Challenge</span>
+                </button>
+                <button onclick="switchTab('tab-badges')" id="btn-tab-badges" class="nav-btn inactive-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">
+                    <i class="fa-solid fa-award"></i>
+                    <span>Badges & Stats</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= SECTION 1: VOCABULARY EXPLORER ================= -->
+        <section id="tab-vocab-explorer" class="tab-content space-y-6">
+            <!-- Section Banner -->
+            <div class="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Slide 4: Part A - Listening Vocabulary</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Part A Vocabulary Explorer</h2>
+                    <p class="mt-1 text-sky-100 text-sm sm:text-base max-w-2xl">
+                        Click cards to flip and learn Thai definitions. Click the speaker icon <i class="fa-solid fa-volume-high"></i> for native English pronunciation (Web Speech API).
+                    </p>
+                </div>
+                <i class="fa-solid fa-wrench absolute -right-4 -bottom-6 text-white/10 text-9xl pointer-events-none"></i>
+            </div>
+
+            <!-- Flashcards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="flashcards-grid">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: VOCAB PRACTICE ================= -->
+        <section id="tab-vocab-practice" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100">Slide 4 - Exercise 2</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Listen & Fill in the Blanks</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Select the correct vocabulary word for each sentence. Earn +10 XP for each correct answer!</p>
+                    </div>
+                    <!-- Word Bank Drawer -->
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl w-full lg:w-auto">
+                        <div class="text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Word Bank:</div>
+                        <div class="flex flex-wrap gap-1.5" id="word-bank-container">
+                            <!-- Populated JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Container -->
+                <div class="space-y-4" id="vocab-practice-questions">
+                    <!-- Populated JS -->
+                </div>
+
+                <!-- Submit & Reset Practice Controls -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <button onclick="checkVocabPracticeAnswers()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md shadow-sky-200 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Check All Answers</span>
+                    </button>
+                    <span id="vocab-practice-score-msg" class="text-sm font-bold text-slate-600"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: FOCUS & DIALOGUE ================= -->
+        <section id="tab-focus-grammar" class="tab-content hidden space-y-6">
+            <!-- Grammar Highlight Card -->
+            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-200">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Focus: Passive Voice (รูปประธานถูกกระทำ)</h3>
+                            <p class="text-xs text-indigo-700 font-medium">Structure: Subject + Be (was/were) + Past Participle (V.3)</p>
+                        </div>
+                    </div>
+                    <button onclick="speakGrammarTip()" class="bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>Listen Tip</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                    <div class="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-xs">
+                        <span class="font-bold text-indigo-900">Past Simple Passive:</span>
+                        <p class="text-slate-600 mt-1">The shed <strong class="text-rose-600 bg-rose-50 px-1 rounded">was destroyed</strong>. <span class="th-hint font-th text-slate-500">(โรงเก็บของถูกทำลาย)</span></p>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-xs">
+                        <span class="font-bold text-indigo-900">Plural Passive:</span>
+                        <p class="text-slate-600 mt-1">They <strong class="text-rose-600 bg-rose-50 px-1 rounded">were purchased</strong> at the hardware store. <span class="th-hint font-th text-slate-500">(พวกมันถูกซื้อจากร้านช่าง)</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dialogue Player (Slide 4 Ex 3) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100">Slide 4 - Exercise 3</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1">Talk with a Partner (Audio Simulation)</h3>
+                    </div>
+                    <button onclick="playFullDialogue('dialogue-focus')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md shadow-emerald-100 flex items-center space-x-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Play Conversation</span>
+                    </button>
+                </div>
+
+                <!-- Speech Bubbles Container -->
+                <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200" id="focus-dialogue-bubbles">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-xs">A</div>
+                        <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs max-w-lg">
+                            <p class="text-sm">The shed <span class="font-bold text-rose-600 underline">was destroyed</span>. Can we rebuild it?</p>
+                            <span class="th-hint font-th text-xs text-slate-400 block mt-1">โรงเก็บของถูกทำลายแล้ว พวกเราจะสร้างมันขึ้นมาใหม่ได้ไหม?</span>
+                        </div>
+                        <button onclick="speakText('The shed was destroyed. Can we rebuild it?')" class="text-slate-400 hover:text-sky-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+
+                    <div class="flex items-start space-x-3 justify-end">
+                        <button onclick="speakText('No, we can\'t rebuild it by ourselves.')" class="text-slate-400 hover:text-sky-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        <div class="bg-sky-500 text-white p-3 rounded-2xl rounded-tr-none shadow-xs max-w-lg">
+                            <p class="text-sm">No, we can't rebuild it by ourselves.</p>
+                            <span class="th-hint font-th text-xs text-sky-100 block mt-1">ไม่ล่ะ พวกเราไม่สามารถสร้างมันใหม่ด้วยตัวเองได้หรอก</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-xs">B</div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-xs">A</div>
+                        <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs max-w-lg">
+                            <p class="text-sm">Where did you get those tools, Frank?</p>
+                            <span class="th-hint font-th text-xs text-slate-400 block mt-1">นายไปเอาเครื่องมือพวกนั้นมาจากไหนเหรอ แฟรงก์?</span>
+                        </div>
+                        <button onclick="speakText('Where did you get those tools, Frank?')" class="text-slate-400 hover:text-sky-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+
+                    <div class="flex items-start space-x-3 justify-end">
+                        <button onclick="speakText('They were purchased at the hardware store.')" class="text-slate-400 hover:text-sky-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        <div class="bg-sky-500 text-white p-3 rounded-2xl rounded-tr-none shadow-xs max-w-lg">
+                            <p class="text-sm">They <span class="font-bold text-amber-200 underline">were purchased</span> at the hardware store.</p>
+                            <span class="th-hint font-th text-xs text-sky-100 block mt-1">พวกมันถูกซื้อมาจากร้านขายเครื่องมือช่างน่ะ</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-xs">Frank</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listening Circle MCQs (Slide 4 Ex 4) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100">Slide 4 - Exercise 4</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1">Listen and Circle the Correct Option</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ex4-mcq-container">
+                    <!-- Populated JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: LISTEN UP ================= -->
+        <section id="tab-listen-up" class="tab-content hidden space-y-6">
+            <!-- Audio Script Box -->
+            <div class="bg-slate-900 rounded-2xl p-6 text-white space-y-4 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-white">Listen Up: Leah's Computer Problem</h3>
+                            <span class="text-xs text-sky-400">Slide 5 - Tracks 5-04</span>
+                        </div>
+                    </div>
+                    <button onclick="playLeahAudioScript()" id="leah-audio-btn" class="bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center space-x-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Play Audio Script</span>
+                    </button>
+                </div>
+                <div class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                    <p class="font-serif italic text-slate-200">"Leah is upset because her computer broke suddenly. She called technical support, but they think it's a simple hardware issue. Leah doesn't have the tools to fix it herself. Fortunately, Tony offers to take her to his friend's dad's store/repair shop to solve the problem."</p>
+                </div>
+            </div>
+
+            <!-- Exercise 6: True / False -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100">Slide 5 - Exercise 6</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-1">Listen again and circle True or False</h3>
+                </div>
+
+                <div class="space-y-3" id="ex6-tf-container">
+                    <!-- Populated JS -->
+                </div>
+            </div>
+
+            <!-- Exercise 7: MCQs -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100">Slide 5 - Exercise 7</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-1">Listen again and choose the best answer</h3>
+                </div>
+
+                <div class="space-y-4" id="ex7-mcq-container">
+                    <!-- Populated JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 5: CHALLENGE ================= -->
+        <section id="tab-challenge" class="tab-content hidden space-y-6">
+            <!-- Audio Script Box -->
+            <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white space-y-4 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/20 pb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-crow"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-white">Challenge: Earl & Nora's Birdhouse</h3>
+                            <span class="text-xs text-amber-100">Slide 5 - Track 5-05</span>
+                        </div>
+                    </div>
+                    <button onclick="playEarlAudioScript()" class="bg-white text-amber-800 hover:bg-amber-50 font-bold text-xs px-4 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
+                        <i class="fa-solid fa-play text-amber-600"></i>
+                        <span>Play Audio Script</span>
+                    </button>
+                </div>
+                <div class="text-xs sm:text-sm text-amber-50 leading-relaxed bg-black/10 p-4 rounded-xl border border-white/10">
+                    <p class="font-serif italic">"Earl is concerned about his birdhouse that was damaged by a fall from a tree. Earl made the birdhouse himself and loves it. Nora offers to help find wood glue at the store to repair it instead of buying a new one."</p>
+                </div>
+            </div>
+
+            <!-- Challenge 4 MCQs -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-100">Slide 5 - Exercise 8 (Questions 1-4)</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-1">Listen and Circle</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ex8-mcq-container">
+                    <!-- Populated JS -->
+                </div>
+            </div>
+
+            <!-- Challenge 4 True/False Items -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-100">Slide 5 - Exercise 8 (Item 5)</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-1">Circle True or False</h3>
+                </div>
+
+                <div class="space-y-3" id="ex8-tf-container">
+                    <!-- Populated JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= BADGES & STATS TAB ================= -->
+        <section id="tab-badges" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Achievement Badges & Learning Progress</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Complete activities across Part A to unlock special badges!</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-2xl font-extrabold text-sky-600" id="stats-completion-pct">0%</span>
+                        <span class="text-xs text-slate-400 block font-bold">Overall Progress</span>
+                    </div>
+                </div>
+
+                <!-- Badges Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="badges-grid">
+                    <!-- Populated JS -->
+                </div>
+
+                <!-- Completion Trophy Card -->
+                <div class="bg-gradient-to-r from-amber-400 via-orange-500 to-amber-600 rounded-2xl p-6 text-white text-center space-y-3 shadow-lg">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-3xl">
+                        🏆
+                    </div>
+                    <h3 class="text-xl font-extrabold">Ready to Complete Unit 5 Part A?</h3>
+                    <p class="text-xs sm:text-sm text-amber-100 max-w-md mx-auto">
+                        Finish all flashcards, practice questions, and listening challenges to earn maximum XP and unlock your Master Certificate!
+                    </p>
+                    <button onclick="triggerConfetti()" class="bg-white text-amber-800 hover:bg-amber-50 font-bold px-6 py-2.5 rounded-xl transition shadow-md inline-flex items-center space-x-2 text-sm">
+                        <i class="fa-solid fa-sparkles text-amber-500"></i>
+                        <span>Celebrate Victory!</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>New Frontiers 4 - Unit 5: Problems Around the House (Part A: Listening)</p>
+            <p class="mt-1 text-slate-300">Designed for M.4 Students • Web Speech API Powered</p>
+        </div>
+    </footer>
+
+    <!-- SUCCESS TOAST NOTIFICATION -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center space-x-3">
+            <div id="toast-icon" class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white text-sm font-bold">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+                <h4 id="toast-title" class="text-xs font-bold text-white">Notification</h4>
+                <p id="toast-body" class="text-xs text-slate-300">Toast message details</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ================= STATE & DATA ================= */
+        let userXP = 0;
+        let showThai = true;
+        let ttsSpeed = 1.0;
+        let answeredQuestions = new Set();
+
+        // Target Vocab List
+        const vocabList = [
+            { id: 'tool', word: 'tool', pos: 'noun', th: 'เครื่องมือ / อุปกรณ์', def: 'An instrument used to make or repair something.', ex: 'My dad needs to buy some tools to fix the house.', icon: 'fa-wrench' },
+            { id: 'rebuild', word: 'rebuild', pos: 'verb', th: 'สร้างใหม่ / บูรณะ', def: 'To build something again after it has been damaged.', ex: 'The shed was destroyed, so we need to rebuild it.', icon: 'fa-hammer' },
+            { id: 'hardware_store', word: 'hardware store', pos: 'noun', th: 'ร้านเครื่องมือช่าง', def: 'A shop selling tools, building materials, and equipment.', ex: 'They were purchased at the local hardware store.', icon: 'fa-store' },
+            { id: 'weak', word: 'weak', pos: 'adj', th: 'อ่อนแอ / ไม่แข็งแรง', def: 'Lacking physical strength or durability.', ex: 'Rose guesses her windows were kind of weak.', icon: 'fa-heart-crack' },
+            { id: 'suddenly', word: 'suddenly', pos: 'adv', th: 'อย่างทันทีทันใด', def: 'Quickly and unexpectedly without warning.', ex: 'The storm suddenly broke a bunch of windows.', icon: 'fa-bolt' },
+            { id: 'support', word: 'support', pos: 'noun/verb', th: 'การช่วยเหลือ / สนับสนุน', def: 'Help or assistance given to someone.', ex: 'Rose thanks Vance for the support.', icon: 'fa-hand-holding-heart' },
+            { id: 'simple', word: 'simple', pos: 'adj', th: 'ง่ายๆ / ไม่ซับซ้อน', def: 'Easy to do or understand; not complicated.', ex: 'Vance thinks fixing the window should be simple.', icon: 'fa-check' },
+            { id: 'purchase', word: 'purchase', pos: 'verb/noun', th: 'ซื้อ / การซื้อ', def: 'To buy something with money.', ex: 'Her dad couldn\'t purchase the stuff he needed.', icon: 'fa-cart-shopping' }
+        ];
+
+        // Section 2: Vocab Fill in the Blanks Data
+        const practiceData = [
+            { id: 'vp1', sentence: "1. The storm _______ broke a bunch of windows.", answer: "suddenly", thHint: "พายุทำหน้าต่างแตกอย่างกระทันหัน" },
+            { id: 'vp2', sentence: "2. Vance thinks the windows should be a _______ fix.", answer: "simple", thHint: "แวนซ์คิดว่าการซ่อมหน้าต่างน่าจะเป็นเรื่องง่ายๆ" },
+            { id: 'vp3', sentence: "3. Rose guesses her windows were kind of _______.", answer: "weak", thHint: "โรสคาดว่าหน้าต่างของเธอค่อนข้างจะไม่แข็งแรง" },
+            { id: 'vp4', sentence: "4. Rose says the windows may be tough to _______.", answer: "rebuild", thHint: "โรสบอกว่าหน้าต่างอาจจะยากที่จะสร้างใหม่" },
+            { id: 'vp5', sentence: "5. Rose's dad went to the _______ in the morning.", answer: "hardware store", thHint: "พ่อของโรสไปที่ร้านขายเครื่องมือช่างเมื่อเช้านี้" },
+            { id: 'vp6', sentence: "6. Rose's dad needs to buy some _______ to fix the house.", answer: "tools", thHint: "พ่อของโรสต้องซื้อเครื่องมือเพื่อมาซ่อมบ้าน" },
+            { id: 'vp7', sentence: "7. Her dad couldn't _______ the stuff he needs.", answer: "purchase", thHint: "พ่อของเธอไม่สามารถซื้อของที่เขาต้องการได้" },
+            { id: 'vp8', sentence: "8. Rose thanks Vance for the _______ but says she will be fine.", answer: "support", thHint: "โรสขอบคุณแวนซ์สำหรับการช่วยเหลือ" }
+        ];
+
+        // Section 3: Slide 4 Ex 4 MCQs
+        const ex4MCQData = [
+            {
+                id: 'ex4_1',
+                q: '1. Who will fix the vase?',
+                options: [
+                    { key: 'a', text: 'Dona' },
+                    { key: 'b', text: 'Frank' },
+                    { key: 'c', text: 'Dona\'s mom', correct: true }
+                ],
+                th: 'ใครจะเป็นคนซ่อมแจกัน?'
+            },
+            {
+                id: 'ex4_2',
+                q: '2. What were damaged last week?',
+                options: [
+                    { key: 'a', text: 'furniture', correct: true },
+                    { key: 'b', text: 'toolboxes' },
+                    { key: 'c', text: 'tools' }
+                ],
+                th: 'อะไรได้รับความเสียหายเมื่อสัปดาห์ที่แล้ว?'
+            },
+            {
+                id: 'ex4_3',
+                q: '3. Who broke the chair?',
+                options: [
+                    { key: 'a', text: 'Matt' },
+                    { key: 'b', text: 'Matt\'s dad', correct: true },
+                    { key: 'c', text: 'Matt\'s mom' }
+                ],
+                th: 'ใครทำเก้าอี้พัง?'
+            },
+            {
+                id: 'ex4_4',
+                q: '4. What damaged the floor?',
+                options: [
+                    { key: 'a', text: 'water', correct: true },
+                    { key: 'b', text: 'people' },
+                    { key: 'c', text: 'wood' }
+                ],
+                th: 'อะไรเป็นสาเหตุให้พื้นเสียหาย?'
+            }
+        ];
+
+        // Section 4: Slide 5 Ex 6 (True/False)
+        const ex6TFData = [
+            { id: 'ex6_1', statement: "1. Leah is upset because her computer broke.", ans: true },
+            { id: 'ex6_2', statement: "2. Leah thinks her computer has a virus.", ans: false },
+            { id: 'ex6_3', statement: "3. Technical support helped Leah fix her computer.", ans: false },
+            { id: 'ex6_4', statement: "4. Tony's dad runs a computer repair shop.", ans: true }
+        ];
+
+        // Section 4: Slide 5 Ex 7 (MCQ)
+        const ex7MCQData = [
+            {
+                id: 'ex7_1',
+                q: '1. What are they mostly talking about?',
+                options: [
+                    { key: 'a', text: 'Leah\'s computer', correct: true },
+                    { key: 'b', text: 'Tony\'s hardware store' }
+                ]
+            },
+            {
+                id: 'ex7_2',
+                q: '2. What does Leah think of technical support?',
+                options: [
+                    { key: 'a', text: 'They\'re very helpful.' },
+                    { key: 'b', text: 'She could probably do a better job.', correct: true }
+                ]
+            },
+            {
+                id: 'ex7_3',
+                q: '3. Technical support thinks the problem is _______.',
+                options: [
+                    { key: 'a', text: 'the hardware' },
+                    { key: 'b', text: 'simple', correct: true }
+                ]
+            },
+            {
+                id: 'ex7_4',
+                q: '4. Why can\'t Leah fix the computer herself?',
+                options: [
+                    { key: 'a', text: 'She doesn\'t have the tools.', correct: true },
+                    { key: 'b', text: 'She doesn\'t have the money.' }
+                ]
+            },
+            {
+                id: 'ex7_5',
+                q: '5. Where will they go to fix the computer?',
+                options: [
+                    { key: 'a', text: 'the hardware store' },
+                    { key: 'b', text: 'Tony\'s friend\'s dad\'s store', correct: true }
+                ]
+            }
+        ];
+
+        // Section 5: Challenge Ex 8 MCQs
+        const ex8MCQData = [
+            {
+                id: 'ex8_1',
+                q: '1. What is Earl concerned about?',
+                options: [
+                    { key: 'a', text: 'a birdbath' },
+                    { key: 'b', text: 'a bird feeder' },
+                    { key: 'c', text: 'a birdhouse', correct: true }
+                ]
+            },
+            {
+                id: 'ex8_2',
+                q: '2. What caused the damage?',
+                options: [
+                    { key: 'a', text: 'a very big bird' },
+                    { key: 'b', text: 'a fall from the tree', correct: true },
+                    { key: 'c', text: 'squirrels' }
+                ]
+            },
+            {
+                id: 'ex8_3',
+                q: '3. Who made it?',
+                options: [
+                    { key: 'a', text: 'Earl', correct: true },
+                    { key: 'b', text: 'Nora' },
+                    { key: 'c', text: 'It came from the store.' }
+                ]
+            },
+            {
+                id: 'ex8_4',
+                q: '4. What will Nora help find?',
+                options: [
+                    { key: 'a', text: 'a new bird feeder' },
+                    { key: 'b', text: 'wood glue', correct: true },
+                    { key: 'c', text: 'the birds' }
+                ]
+            }
+        ];
+
+        // Section 5: Challenge Ex 8 True/False
+        const ex8TFData = [
+            { id: 'ex8_tf_a', statement: "a. Nora is giving Earl the gift of a birdbath.", ans: false },
+            { id: 'ex8_tf_b', statement: "b. Birds really like Earl's birdhouse.", ans: true },
+            { id: 'ex8_tf_c', statement: "c. Nora would rather buy a new one.", ans: false },
+            { id: 'ex8_tf_d', statement: "d. Nora will help Earl.", ans: true }
+        ];
+
+        /* ================= WEB SPEECH API FUNCTIONS ================= */
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                showToast("Speech Synthesis Not Supported", "Your browser doesn't support Web Speech API.", "error");
+                return;
+            }
+            window.speechSynthesis.cancel(); // Stop ongoing speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = ttsSpeed;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function setTtsSpeed(speed) {
+            ttsSpeed = speed;
+            ['08', '10', '12'].forEach(s => {
+                const btn = document.getElementById(`spd-${s}`);
+                if (btn) {
+                    btn.classList.remove('bg-white', 'text-sky-600', 'shadow-sm');
+                    btn.classList.add('text-slate-600');
+                }
+            });
+            const activeBtn = document.getElementById(`spd-${speed.toString().replace('.', '')}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-sky-600', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600');
+            }
+            showToast("Speed Updated", `Audio playback speed set to ${speed}x`, "info");
+        }
+
+        function speakGrammarTip() {
+            speakText("Past simple passive: The shed was destroyed. Plural passive: They were purchased at the hardware store.");
+        }
+
+        function playLeahAudioScript() {
+            speakText("Leah is upset because her computer broke suddenly. She tried calling technical support, but they think it's a simple hardware issue. Leah doesn't have the tools to fix it. Tony offers to take her to his friend's dad's store.");
+        }
+
+        function playEarlAudioScript() {
+            speakText("Earl is concerned about his birdhouse. A fall from the tree caused damage. Earl made it himself. Nora offers to help find wood glue at the store because birds really like Earl's birdhouse.");
+        }
+
+        function playFullDialogue() {
+            speakText("The shed was destroyed. Can we rebuild it? No, we can't rebuild it by ourselves. Where did you get those tools, Frank? They were purchased at the hardware store.");
+        }
+
+        /* ================= GAMIFICATION & XP ================= */
+        function addXP(points, reason = "") {
+            userXP += points;
+            document.getElementById('xp-counter').textContent = userXP;
+            showToast(`+${points} XP Earned!`, reason || "Great job!", "success");
+            updateGlobalProgressBar();
+        }
+
+        function showToast(title, msg, type = "success") {
+            const toast = document.getElementById('toast-notification');
+            const toastTitle = document.getElementById('toast-title');
+            const toastBody = document.getElementById('toast-body');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastTitle.textContent = title;
+            toastBody.textContent = msg;
+
+            if (type === "success") {
+                toastIcon.className = "w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white text-sm font-bold";
+                toastIcon.innerHTML = `<i class="fa-solid fa-check"></i>`;
+            } else if (type === "error") {
+                toastIcon.className = "w-8 h-8 rounded-xl bg-rose-500 flex items-center justify-center text-white text-sm font-bold";
+                toastIcon.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+            } else {
+                toastIcon.className = "w-8 h-8 rounded-xl bg-sky-500 flex items-center justify-center text-white text-sm font-bold";
+                toastIcon.innerHTML = `<i class="fa-solid fa-info"></i>`;
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleThaiHints() {
+            showThai = !showThai;
+            const btnTxt = document.getElementById('th-toggle-txt');
+            btnTxt.textContent = showThai ? "TH Hints: ON" : "TH Hints: OFF";
+
+            document.querySelectorAll('.th-hint').forEach(el => {
+                if (showThai) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        function updateGlobalProgressBar() {
+            const totalQuestions = practiceData.length + ex4MCQData.length + ex6TFData.length + ex7MCQData.length + ex8MCQData.length + ex8TFData.length;
+            const pct = Math.min(Math.round((answeredQuestions.size / totalQuestions) * 100), 100);
+            
+            document.getElementById('global-progress-bar').style.width = `${pct}%`;
+            document.getElementById('stats-completion-pct').textContent = `${pct}%`;
+        }
+
+        /* ================= TAB SWITCHING ================= */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active-tab', 'bg-sky-600', 'text-white', 'shadow-md');
+                btn.classList.add('inactive-tab', 'text-slate-600', 'hover:bg-slate-100');
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab', 'bg-sky-600', 'text-white', 'shadow-md');
+                activeBtn.classList.remove('inactive-tab', 'text-slate-600', 'hover:bg-slate-100');
+            }
+        }
+
+        /* ================= RENDER SECTION 1: FLASHCARDS ================= */
+        function renderFlashcards() {
+            const container = document.getElementById('flashcards-grid');
+            container.innerHTML = vocabList.map(item => `
+                <div class="card-flip h-56 cursor-pointer group" onclick="flipCard(this, '${item.id}')">
+                    <div class="card-inner relative w-full h-full duration-500">
+                        <!-- Front -->
+                        <div class="card-front absolute inset-0 bg-white border border-slate-200 rounded-2xl p-5 flex flex-col justify-between shadow-xs hover:border-sky-300 hover:shadow-md transition">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2 py-0.5 rounded border border-sky-100">${item.pos}</span>
+                                <button onclick="event.stopPropagation(); speakText('${item.word}')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-sky-50 text-slate-500 hover:text-sky-600 flex items-center justify-center transition" title="Listen Pronunciation">
+                                    <i class="fa-solid fa-volume-high text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="text-center my-auto">
+                                <i class="fa-solid ${item.icon} text-3xl text-sky-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                                <h3 class="text-xl font-extrabold text-slate-900">${item.word}</h3>
+                            </div>
+                            <div class="flex items-center justify-between text-xs text-slate-400">
+                                <span>Click to flip</span>
+                                <i class="fa-solid fa-rotate text-slate-300"></i>
+                            </div>
+                        </div>
+                        <!-- Back -->
+                        <div class="card-back absolute inset-0 bg-slate-900 text-white rounded-2xl p-5 flex flex-col justify-between shadow-md">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">${item.word}</span>
+                                <button onclick="event.stopPropagation(); speakText('${item.word}')" class="text-sky-400 hover:text-white transition">
+                                    <i class="fa-solid fa-volume-high text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-1 my-auto">
+                                <p class="text-lg font-bold text-emerald-400 font-th">${item.th}</p>
+                                <p class="text-xs text-slate-300 leading-snug">${item.def}</p>
+                                <p class="text-[11px] text-slate-400 italic pt-1 border-t border-slate-800">"${item.ex}"</p>
+                            </div>
+                            <span class="text-[10px] text-slate-500 text-right">M.4 Unit 5</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipCard(cardEl, vocabId) {
+            cardEl.classList.toggle('flipped');
+            if (!answeredQuestions.has(`card_${vocabId}`)) {
+                answeredQuestions.add(`card_${vocabId}`);
+                addXP(5, "Discovered vocabulary flashcard!");
+            }
+        }
+
+        /* ================= RENDER SECTION 2: VOCAB PRACTICE ================= */
+        function renderVocabPractice() {
+            // Render Word Bank
+            const wordBankContainer = document.getElementById('word-bank-container');
+            const wordBank = ['suddenly', 'simple', 'weak', 'rebuild', 'hardware store', 'tools', 'purchase', 'support'];
+            wordBankContainer.innerHTML = wordBank.map(w => `
+                <span onclick="selectWordFromBank('${w}')" class="cursor-pointer bg-white border border-slate-300 hover:border-sky-500 hover:bg-sky-50 text-slate-700 font-medium px-2.5 py-1 rounded-lg text-xs transition shadow-2xs">
+                    ${w}
+                </span>
+            `).join('');
+
+            // Render Practice Questions
+            const questionsContainer = document.getElementById('vocab-practice-questions');
+            questionsContainer.innerHTML = practiceData.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="text-sm font-semibold text-slate-800 flex-grow">
+                            ${item.sentence.replace('_______', `
+                                <select id="select-${item.id}" class="mx-1 bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-bold text-sky-700 focus:outline-none focus:border-sky-500 shadow-2xs">
+                                    <option value="">-- select --</option>
+                                    ${wordBank.map(w => `<option value="${w}">${w}</option>`).join('')}
+                                </select>
+                            `)}
+                        </label>
+                        <button onclick="speakText('${item.sentence.replace('_______', item.answer)}')" class="text-slate-400 hover:text-sky-600 transition p-1" title="Listen Sentence">
+                            <i class="fa-solid fa-volume-high text-xs"></i>
+                        </button>
+                    </div>
+                    <p class="th-hint font-th text-xs text-slate-500 italic pl-1 border-l-2 border-sky-300">${item.thHint}</p>
+                    <div id="feedback-${item.id}" class="text-xs font-bold hidden"></div>
+                </div>
+            `).join('');
+        }
+
+        function checkVocabPracticeAnswers() {
+            let correctCount = 0;
+            practiceData.forEach(item => {
+                const selectEl = document.getElementById(`select-${item.id}`);
+                const feedbackEl = document.getElementById(`feedback-${item.id}`);
+                
+                if (selectEl && selectEl.value === item.answer) {
+                    correctCount++;
+                    feedbackEl.className = "text-xs font-bold text-emerald-600 flex items-center space-x-1 mt-1";
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>Correct! (+10 XP)</span>`;
+                    feedbackEl.classList.remove('hidden');
+
+                    if (!answeredQuestions.has(item.id)) {
+                        answeredQuestions.add(item.id);
+                        addXP(10, `Correct: ${item.answer}`);
+                    }
+                } else if (selectEl) {
+                    feedbackEl.className = "text-xs font-bold text-rose-600 flex items-center space-x-1 mt-1";
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <span>Incorrect. Answer is "${item.answer}"</span>`;
+                    feedbackEl.classList.remove('hidden');
+                }
+            });
+
+            const scoreMsg = document.getElementById('vocab-practice-score-msg');
+            scoreMsg.textContent = `Score: ${correctCount}/${practiceData.length}`;
+            
+            if (correctCount === practiceData.length) {
+                triggerConfetti();
+                showToast("Perfect Score!", "You answered all 8 practice items correctly!", "success");
+            }
+        }
+
+        /* ================= RENDER SECTION 3: FOCUS & EX 4 ================= */
+        function renderFocusEx4() {
+            const container = document.getElementById('ex4-mcq-container');
+            container.innerHTML = ex4MCQData.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-900">${item.q}</h4>
+                        <p class="th-hint font-th text-xs text-slate-500 mt-0.5">${item.th}</p>
+                    </div>
+                    <div class="space-y-1.5" id="opts-${item.id}">
+                        ${item.options.map(opt => `
+                            <button onclick="checkMCQ('${item.id}', '${opt.key}', ${opt.correct || false})" class="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center justify-between">
+                                <span>${opt.key}. ${opt.text}</span>
+                                <i class="fa-solid fa-circle-notch text-slate-300 text-[10px] indicator"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ================= RENDER SECTION 4: LISTEN UP ================= */
+        function renderListenUp() {
+            // Render Ex 6 (T/F)
+            const ex6Container = document.getElementById('ex6-tf-container');
+            ex6Container.innerHTML = ex6TFData.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                    <span class="text-xs sm:text-sm font-semibold text-slate-800">${item.statement}</span>
+                    <div class="flex items-center space-x-2" id="tf-opts-${item.id}">
+                        <button onclick="checkTF('${item.id}', true, ${item.ans === true})" class="px-3 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition">True</button>
+                        <button onclick="checkTF('${item.id}', false, ${item.ans === false})" class="px-3 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition">False</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Ex 7 (MCQs)
+            const ex7Container = document.getElementById('ex7-mcq-container');
+            ex7Container.innerHTML = ex7MCQData.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
+                    <h4 class="text-sm font-bold text-slate-900">${item.q}</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="opts-${item.id}">
+                        ${item.options.map(opt => `
+                            <button onclick="checkMCQ('${item.id}', '${opt.key}', ${opt.correct || false})" class="text-left px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center justify-between">
+                                <span>${opt.key}. ${opt.text}</span>
+                                <i class="fa-solid fa-circle-notch text-slate-300 text-[10px] indicator"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ================= RENDER SECTION 5: CHALLENGE ================= */
+        function renderChallenge() {
+            // Render Ex 8 MCQs
+            const ex8MCQContainer = document.getElementById('ex8-mcq-container');
+            ex8MCQContainer.innerHTML = ex8MCQData.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
+                    <h4 class="text-sm font-bold text-slate-900">${item.q}</h4>
+                    <div class="space-y-1.5" id="opts-${item.id}">
+                        ${item.options.map(opt => `
+                            <button onclick="checkMCQ('${item.id}', '${opt.key}', ${opt.correct || false})" class="w-full text-left px-3 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center justify-between">
+                                <span>${opt.key}. ${opt.text}</span>
+                                <i class="fa-solid fa-circle-notch text-slate-300 text-[10px] indicator"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Ex 8 T/F
+            const ex8TFContainer = document.getElementById('ex8-tf-container');
+            ex8TFContainer.innerHTML = ex8TFData.map(item => `
+                <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                    <span class="text-xs sm:text-sm font-semibold text-slate-800">${item.statement}</span>
+                    <div class="flex items-center space-x-2" id="tf-opts-${item.id}">
+                        <button onclick="checkTF('${item.id}', true, ${item.ans === true})" class="px-3 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition">True</button>
+                        <button onclick="checkTF('${item.id}', false, ${item.ans === false})" class="px-3 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition">False</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ================= GENERIC QUESTION HANDLERS ================= */
+        function checkMCQ(qId, key, isCorrect) {
+            const container = document.getElementById(`opts-${qId}`);
+            if (!container) return;
+
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-60');
+            });
+
+            const clickedBtn = Array.from(buttons).find(b => b.textContent.trim().startsWith(key));
+            if (clickedBtn) {
+                clickedBtn.classList.remove('opacity-60');
+                if (isCorrect) {
+                    clickedBtn.className = "w-full text-left px-3 py-2 rounded-lg border-2 border-emerald-500 bg-emerald-50 text-xs font-bold text-emerald-800 transition flex items-center justify-between";
+                    clickedBtn.querySelector('.indicator').className = "fa-solid fa-circle-check text-emerald-600 text-sm";
+                    
+                    if (!answeredQuestions.has(qId)) {
+                        answeredQuestions.add(qId);
+                        addXP(10, "Correct Answer!");
+                    }
+                } else {
+                    clickedBtn.className = "w-full text-left px-3 py-2 rounded-lg border-2 border-rose-500 bg-rose-50 text-xs font-bold text-rose-800 transition flex items-center justify-between";
+                    clickedBtn.querySelector('.indicator').className = "fa-solid fa-circle-xmark text-rose-600 text-sm";
+                    showToast("Incorrect Option", "Try listening to the script again!", "error");
+                }
+            }
+        }
+
+        function checkTF(qId, userVal, isCorrect) {
+            const container = document.getElementById(`tf-opts-${qId}`);
+            if (!container) return;
+
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (isCorrect) {
+                showToast("Correct!", "Great listening comprehension!", "success");
+                if (!answeredQuestions.has(qId)) {
+                    answeredQuestions.add(qId);
+                    addXP(10, "True/False Correct!");
+                }
+            } else {
+                showToast("Incorrect Answer", "Check the audio text carefully.", "error");
+            }
+        }
+
+        /* ================= RENDER BADGES ================= */
+        function renderBadges() {
+            const badges = [
+                { id: 'b1', title: 'Vocab Explorer', icon: 'fa-book', desc: 'Learn all 8 Part A core words', required: 8 },
+                { id: 'b2', title: 'Grammar Master', icon: 'fa-wand-magic-sparkles', desc: 'Understand Passive Voice', required: 12 },
+                { id: 'b3', title: 'Listening Ninja', icon: 'fa-headphones', desc: 'Complete Leah\'s computer exercise', required: 18 },
+                { id: 'b4', title: 'Unit 5 Champion', icon: 'fa-trophy', desc: 'Finish all Part A activities', required: 25 }
+            ];
+
+            const grid = document.getElementById('badges-grid');
+            grid.innerHTML = badges.map(b => {
+                const isUnlocked = answeredQuestions.size >= b.required;
+                return `
+                    <div class="border ${isUnlocked ? 'border-amber-300 bg-amber-50/50' : 'border-slate-200 bg-slate-50 opacity-60'} p-4 rounded-2xl text-center space-y-2 transition">
+                        <div class="w-12 h-12 ${isUnlocked ? 'bg-amber-500 text-white shadow-md shadow-amber-200' : 'bg-slate-200 text-slate-400'} rounded-2xl flex items-center justify-center mx-auto text-xl">
+                            <i class="fa-solid ${b.icon}"></i>
+                        </div>
+                        <h4 class="font-bold text-xs text-slate-900">${b.title}</h4>
+                        <p class="text-[11px] text-slate-500 leading-tight">${b.desc}</p>
+                        <span class="inline-block text-[10px] font-bold ${isUnlocked ? 'text-amber-700 bg-amber-100' : 'text-slate-500 bg-slate-200'} px-2 py-0.5 rounded-full">
+                            ${isUnlocked ? 'UNLOCKED' : 'LOCKED'}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* ================= CELEBRATION CONFETTI ================= */
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        /* ================= RESET PROGRESS ================= */
+        function resetAllProgress() {
+            userXP = 0;
+            answeredQuestions.clear();
+            document.getElementById('xp-counter').textContent = '0';
+            updateGlobalProgressBar();
+            
+            // Re-render components
+            renderVocabPractice();
+            renderFocusEx4();
+            renderListenUp();
+            renderChallenge();
+            renderBadges();
+
+            showToast("Progress Reset", "All progress has been refreshed.", "info");
+        }
+
+        /* ================= INIT ON LOAD ================= */
+        window.onload = function() {
+            renderFlashcards();
+            renderVocabPractice();
+            renderFocusEx4();
+            renderListenUp();
+            renderChallenge();
+            renderBadges();
+            updateGlobalProgressBar();
+        };
+    </script>
+</body>
+</html>
